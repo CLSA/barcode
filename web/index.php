@@ -13,12 +13,12 @@ require_once( '../settings.ini.php' );
     <h1 class="title">CLSA-&Eacute;LCV <?php print TITLE; ?></h1>
   </div>
   <div class="view">
-    <span class="help">Please select which barcode template you wish to print:</span>
-    <h2>
-      <a href="interview.php">Interviews</a>
-      <a href="vial.php">Aliquoits</a>
-      <a href="box.php">Boxes</a>
-    </h2>
+    <span class="help">
+      Please click the button below to generate a new set of interview barcodes.<br/>
+      Note that barcodes can never be used more than once and it doesn't matter if some are unused.<br/>
+      You can reload the barcode page to generate more barcodes.
+    </span>
+    <h2><a href="interview.php" style="width:16em;">Generate Interview Barcodes</a></h2>
   </div>
   <div class="gradient-footer"></div>
 </body>
