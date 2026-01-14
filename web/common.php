@@ -25,14 +25,18 @@ function draw_label( $img, $title, $code, $x, $y, $width, $height, $ppi, $printf
   $width = round( $width * $ipm * $ppi );
   $height = round( $height * $ipm * $ppi );
   $f = 1/12;
+  $f_width = round( $f * $width );
+  $f_height = round( $f * $height );
+  $f1_width = round( (1+$f) * $width );
+  $f1_height = round( (1+$f) * $height );
   $white = imagecolorallocate( $img, 255, 255, 255 );
   $black = imagecolorallocate( $img, 0, 0, 0 );
 
   if( is_null( $code ) )
   {
     imagefilledrectangle( $img,
-      $x - $f*$width, $y - $f*$height,
-      $x + (1+$f)*$width, $y + (1+$f)*$height,
+      $x - $f_width, $y - $f_height,
+      $x + $f1_width, $y + $f1_height,
       $white );
   }
   else
@@ -50,35 +54,53 @@ function draw_label( $img, $title, $code, $x, $y, $width, $height, $ppi, $printf
     $th = $dims[1] - $dims[7] + $padding;
     $bw = imagesx( $barcode );
     $bh = imagesy( $barcode );
-    $tx = $x + ( $width - $tw ) / 2;
-    $ty = $y + ( $height - $th - $bh ) / 2 - $padding;
-    $bx = $x + ( $width - $bw ) / 2;
-    $by = $y + ( $height - $th - $bh ) / 2 + $th;
+    $tx = round( $x + ( $width - $tw ) / 2 );
+    $ty = round( $y + ( $height - $th - $bh ) / 2 - $padding );
+    $bx = round( $x + ( $width - $bw ) / 2 );
+    $by = round( $y + ( $height - $th - $bh ) / 2 + $th );
 
     // paint barcode
     imagefill( $barcode, 0, 0, $white );
-    imagecopy( $img, $barcode, $bx, $by, 0, 0, $width - 1, $height - 1 );
+    imagecopy(
+      $img,
+      $barcode,
+      $bx, $by,
+      0, 0,
+      $width - 1, $height - 1
+    );
 
     // fill in black background
-    imagefilledrectangle( $img,
-      $x - $f*$width, $y - $f*$height,
-      $x + (1+$f)*$width, $by,
+    imagefilledrectangle(
+      $img,
+      $x - $f_width, $y - $f_height,
+      $x + $f1_width, $by,
       $white );
-    imagefilledrectangle( $img,
-      $x - $f*$width, $by + $bh,
-      $x + (1+$f)*$width, $y + (1+$f)*$height,
-      $white );
-    imagefilledrectangle( $img,
-      $x - $f*$width, $y - $f*$height,
-      $bx, $y + (1+$f)*$height,
-      $white );
-    imagefilledrectangle( $img,
-      $bx + $bw, $y - $f*$height,
-      $x + (1+$f)*$width, $y + (1+$f)*$height,
-      $white );
+    imagefilledrectangle(
+      $img,
+      $x - $f_width, $by + $bh,
+      $x + $f1_width, $y + $f1_height,
+      $white
+    );
+    imagefilledrectangle(
+      $img,
+      $x - $f_width, $y - $f_height,
+      $bx, $y + $f1_height,
+      $white
+    );
+    imagefilledrectangle(
+      $img,
+      $bx + $bw, $y - $f_height,
+      $x + $f1_width, $y + $f1_height,
+      $white
+    );
     
     // For debugging purposes
-    imagerectangle( $img, $x, $y, $x + $width - 1, $y + $height - 1, $black );
+    imagerectangle(
+      $img,
+      $x, $y,
+      $x + $width - 1, $y + $height - 1,
+      $black
+    );
 
     // paint text
     imagettftext( $img, $font_size, 0, $tx, $ty + $th, $black, $font, $title );
